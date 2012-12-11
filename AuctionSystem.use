@@ -1,0 +1,73 @@
+model AuctionSystem
+
+class AuctioneerAgent
+
+end
+
+class User
+
+end
+
+class AuctionAgent
+
+end
+
+class Auction
+	attributes
+		startDate : Date
+		endDate : Date
+end
+
+class EnglishAuction < Auction
+
+end
+
+class DutchAuction < Auction
+
+end
+
+abstract class Category
+	attributes
+		name : String
+		id : Integer
+end
+
+class AuctionObject
+	attributes
+		name : String
+		description : String
+end
+
+aggregation AuctionObjectHasCategory
+	between
+		AuctionObject[*]
+		Category[1]
+end
+
+class SearchAgent
+
+end
+
+class AuctionDescription
+
+end
+
+class BidAgent
+
+end
+
+abstract class BidStrategy
+
+end
+
+class OneTimeBidStrategy < BidStrategy
+
+end
+
+class PeriodicBidStrategy < BidStrategy
+
+end
+
+class Date
+
+end
