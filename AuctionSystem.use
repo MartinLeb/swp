@@ -1,5 +1,6 @@
 model AuctionSystem
 
+-- Enums
 enum CommandWords {
 	login, save
 }
@@ -8,6 +9,7 @@ enum AuctionWords {
 	bid, joinAuction, createAuction
 }
 
+-- Agents ---------------------------------------------------------------------
 abstract class Agent
 	operations
 		send(m:Message) : Boolean
@@ -37,6 +39,7 @@ class UserAgent < Agent
 
 end
 
+-- Messages -------------------------------------------------------------------
 abstract class Message
 
 end
@@ -53,20 +56,9 @@ class CreateAuctionMessage < Message
 		usedId : Integer
 end
 
+-- AuctionBehaviors -----------------------------------------------------------
 abstract class AuctionBehavior
 
-end
-
-aggregation AuctionHasBehavior
-	between
-		AuctionAgent[1]
-		AuctionBehavior[1]
-end
-
-association AuctioneerManagesAuctions
-	between
-		AuctioneerAgent[1]
-		AuctionAgent[*]
 end
 
 class EnglishAuctionBehavior < AuctionBehavior
@@ -77,16 +69,44 @@ class DutchAuctionBehavior < AuctionBehavior
 
 end
 
+-- AuctionObjects etc. --------------------------------------------------------
+class AuctionObject
+	attributes
+		name : String
+		description : String
+end
+
 abstract class Category
 	attributes
 		name : String
 		id : Integer
 end
 
-class AuctionObject
-	attributes
-		name : String
-		description : String
+-- BidStrategies --------------------------------------------------------------
+abstract class BidStrategy
+
+end
+
+class OneTimeBidStrategy < BidStrategy
+
+end
+
+class PeriodicBidStrategy < BidStrategy
+
+end
+
+-- Associations ---------------------------------------------------------------
+association AuctioneerManagesAuctions
+	between
+		AuctioneerAgent[1]
+		AuctionAgent[*]
+end
+
+-- Aggregations ---------------------------------------------------------------
+aggregation AuctionHasBehavior
+	between
+		AuctionAgent[1]
+		AuctionBehavior[1]
 end
 
 aggregation AuctionObjectHasCategory
@@ -99,16 +119,4 @@ aggregation AuctionHasObject
 	between
 		AuctionAgent[1]
 		AuctionObject[1]
-end
-
-abstract class BidStrategy
-
-end
-
-class OneTimeBidStrategy < BidStrategy
-
-end
-
-class PeriodicBidStrategy < BidStrategy
-
 end
