@@ -56,6 +56,26 @@ class CreateAuctionMessage < Message
 		usedId : Integer
 end
 
+class EnterAuctionMessage < Message
+
+end
+
+class SearchMessage < Message
+
+end
+
+class JoinAuctionMessage < Message
+
+end
+
+class JoinAuctionConfirmationMessage < Message
+
+end
+
+class SetStrategyMessage < Message
+
+end
+
 -- AuctionBehaviors -----------------------------------------------------------
 abstract class AuctionBehavior
 
