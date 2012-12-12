@@ -1,28 +1,78 @@
 model AuctionSystem
 
-class AuctioneerAgent
+enum CommandWords {
+	login, save
+}
 
+enum AuctionWords {
+	bid, joinAuction, createAuction
+}
+
+abstract class Agent
+	operations
+		send(m:Message) : Boolean
 end
 
-class User
-
-end
-
-class AuctionAgent
-
-end
-
-class Auction
+class AuctioneerAgent < Agent
 	attributes
-		startDate : Date
-		endDate : Date
+		name : String
+		id : Integer
 end
 
-class EnglishAuction < Auction
+class AuctionAgent < Agent
+	attributes
+		startDate : Integer
+		endDate : Integer
+end
+
+class SearchAgent < Agent
 
 end
 
-class DutchAuction < Auction
+class BidAgent < Agent
+
+end
+
+class UserAgent < Agent
+
+end
+
+class RegisteredUserAgent < UserAgent
+
+end
+
+abstract class Message
+
+end
+
+class RegisterMessage < Message
+	attributes
+		name : String
+		password : String
+		email : String
+end
+
+abstract class AuctionBehavior
+
+end
+
+aggregation AuctionHasBehavior
+	between
+		AuctionAgent[1]
+		AuctionBehavior[1]
+end
+
+association AuctioneerManagesAuctions
+	between
+		AuctioneerAgent[1]
+		AuctionAgent[*]
+end
+
+class EnglishAuctionBehavior < AuctionBehavior
+
+end
+
+class DutchAuctionBehavior < AuctionBehavior
 
 end
 
@@ -44,18 +94,6 @@ aggregation AuctionObjectHasCategory
 		Category[1]
 end
 
-class SearchAgent
-
-end
-
-class AuctionDescription
-
-end
-
-class BidAgent
-
-end
-
 abstract class BidStrategy
 
 end
@@ -65,9 +103,5 @@ class OneTimeBidStrategy < BidStrategy
 end
 
 class PeriodicBidStrategy < BidStrategy
-
-end
-
-class Date
 
 end
