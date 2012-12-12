@@ -37,10 +37,6 @@ class UserAgent < Agent
 
 end
 
-class RegisteredUserAgent < UserAgent
-
-end
-
 abstract class Message
 
 end
@@ -50,6 +46,11 @@ class RegisterMessage < Message
 		name : String
 		password : String
 		email : String
+end
+
+class CreateAuctionMessage < Message
+	attributes
+		usedId : Integer
 end
 
 abstract class AuctionBehavior
@@ -92,6 +93,12 @@ aggregation AuctionObjectHasCategory
 	between
 		AuctionObject[*]
 		Category[1]
+end
+
+aggregation AuctionHasObject
+	between
+		AuctionAgent[1]
+		AuctionObject[1]
 end
 
 abstract class BidStrategy
