@@ -1,15 +1,24 @@
 model Auction
 
 --------------------------------------------
+--enums
+--------------------------------------------
+
+enum CommandWord {
+	login, save, bid, joinAuction, createAuction
+}
+
+--------------------------------------------
 --classes
 --------------------------------------------
 
 class Agent
-attributes 
-	vocab: Vocabulary
+attributes
 	name: String
 	id: Integer
 	description: String
+operations
+	sendMessage(m:Message, receiver:Agent) : Boolean
 end
 
 class AuctioneerAgent < Agent
@@ -27,16 +36,13 @@ class AuctionAgent < Agent
 attributes
 	startTime: Integer
 	endTime: Integer
-operations	
-	confirmParticipation(userID:Integer)
 end
 
 class SearchAgent < Agent
-operations
-	searchQuery(name: String, auctioneerAgent: AuctioneerAgent): AuctionList
+
 end
 
-class AuctionList
+class AuctionDescription
 attributes
 	productDescription: String
 end
@@ -52,8 +58,6 @@ end
 class DutchAuction < AuctionType
 end
 
-
-
 class Bid
 attributes
 	user: User
@@ -62,8 +66,7 @@ attributes
 end
 
 class BidHistory
-attributes
-	bid: Bid
+
 end
 
 class User
@@ -71,26 +74,12 @@ attributes
 	loginName: String
 	password: String
 	eMail: String
-	id: Integer
-operations 
-	setUserID(id: Integer)
-	requestAuction(auctioneerAgent: AuctioneerAgent)
-	pre registeredUser: self.id.isDefined
-
-	register(loginName: String, password: String, eMail: String): AuctioneerAgent
-	joinAuction(userID: Integer, auctionAgentID: Integer, auctionID: Integer)
-	searchAuction(name: String, searchAgent: SearchAgent): AuctionList
-	setStrategy(bidAgentID: Integer, strategy:Strategy)
-	
+	id: Integer	
 end
 
-class Vocabulary
-operations
-	login(name : String, password : String)
-	save()
-	bid(price : Real)
-	joinAuction(id : Integer)
-	createAuction(name : String, id : Integer)
+class Message
+attributes
+	command : CommandWord
 end
 
 class Category
@@ -140,15 +129,15 @@ composition saves between
 	AuctionAgent[1]
 	BidHistory[1]
 end
+
+composition BidHistoryContainsBids between
+	BidHistory[1]
+	Bid[*]
+end
 	
 --------------------------------------------
 --aggregations
 --------------------------------------------
-
-aggregation Uses between
-	Agent[*]
-	Vocabulary[1]
-end
 
 aggregation ObjectHasCategory between
 	Object[1]
@@ -167,26 +156,26 @@ end
 
 aggregation resultList between
 	SearchAgent[1]
-	AuctionList[1]
+	AuctionDescription[*]
 end
 
 aggregation auctionList between
 	AuctioneerAgent[1]
-	AuctionList[1]
+	AuctionDescription[*]
 end
 
 --------------------------------------------
 --associations
 --------------------------------------------
 
+association AgentUsesMessages between
+	Agent[1]
+	Message[*]
+end
+
 association CategoryHierarchy between
 	Category[0..*] role Category
 	Category[1] role SubCategory
-end
-
-association BidHistory between
-	BidHistory[1] role Bid 
-	BidHistory[1] role EarlierBid
 end
 
 association administrate between
@@ -197,11 +186,6 @@ end
 association registered between
 	AuctioneerAgent[0..*]
 	User[0..*]
-end
-
-association list between
-	AuctionList[1] role searchResult
-	AuctionList[1] role nextResult
 end
 
 association search between
