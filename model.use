@@ -4,8 +4,10 @@ model Auction
 --enums
 --------------------------------------------
 
+-- no distinction between general and auction-specific commands here,
+-- doesn't seem to make sense on this level
 enum CommandWord {
-	login, save, bid, joinAuction, createAuction
+	login, register, bid, joinAuction, createAuction
 }
 
 --------------------------------------------
@@ -18,18 +20,17 @@ attributes
 	id: Integer
 	description: String
 operations
-	sendMessage(m:Message, receiver:Agent) : Boolean
+	sendMessage(m: Message, receiver: Agent): Boolean
 end
 
 class AuctioneerAgent < Agent
 operations
 	generateUserID(): Integer
-	generateAuctionID():Integer
+	generateAuctionID(): Integer
 	generateAuctionAgent(auctionID: Integer)
 end
 
 class BidAgent < Agent
-
 end
 
 class AuctionAgent < Agent
@@ -39,7 +40,6 @@ attributes
 end
 
 class SearchAgent < Agent
-
 end
 
 class AuctionDescription
@@ -47,7 +47,11 @@ attributes
 	productDescription: String
 end
 
-class AuctionType
+abstract class AuctionType
+attributes
+	currentBid: Real
+operations
+	acceptBid(amount: Real): Boolean
 end
 
 class EnglishAuction < AuctionType
@@ -56,17 +60,17 @@ attributes
 end
 
 class DutchAuction < AuctionType
+attributes
+	startPrice: Real
 end
 
 class Bid
 attributes
 	user: User
 	price: Real
-	startTime: Integer
 end
 
 class BidHistory
-
 end
 
 class User
@@ -79,7 +83,7 @@ end
 
 class Message
 attributes
-	command : CommandWord
+	command: CommandWord
 end
 
 class Category
@@ -90,7 +94,7 @@ end
 
 class Object
 attributes
-	name:String
+	name: String
 	description: String
 end
 
