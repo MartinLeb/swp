@@ -57,11 +57,13 @@ end
 class EnglishAuction < AuctionType
 attributes 
 	minBid: Real
+	priceIncrement: Real
 end
 
 class DutchAuction < AuctionType
 attributes
 	startPrice: Real
+	priceDecrement: Real
 end
 
 class Bid
