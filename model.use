@@ -20,18 +20,14 @@ operations
 end
 
 class BidAgent < Agent
-attributes
-	strategy: Strategy
 
 end
 
 class AuctionAgent < Agent
 attributes
-	auctionID: Integer
-operations
-	createAuction(name: String, auctionID: Integer, productDescription: String, auctionType: AuctionType, startTime: Integer, endTime: Integer)
-	pre endTimeAfterStart: endTime > startTime
-	
+	startTime: Integer
+	endTime: Integer
+operations	
 	confirmParticipation(userID:Integer)
 end
 
@@ -43,17 +39,6 @@ end
 class AuctionList
 attributes
 	productDescription: String
-end
-
-class Auction
-attributes
-  name: String
-  id: Integer
-  productDescription: String
-  auctionType: AuctionType
-  startTime: Integer
-  endTime: Integer
-  bidHistory: BidHistory
 end
 
 class AuctionType
@@ -118,7 +103,6 @@ class Object
 attributes
 	name:String
 	description: String
-	category: Category
 end
 
 
@@ -148,12 +132,12 @@ end
 --------------------------------------------
 
 composition Has between
-	Auction[1] 
+	AuctionAgent[1] 
 	Object[1]	
 end
 
 composition saves between
-	Auction[1]
+	AuctionAgent[1]
 	BidHistory[1]
 end
 	
@@ -177,18 +161,18 @@ aggregation Follows between
 end
 
 aggregation hasOne between
-	Auction[1..*]
+	AuctionAgent[1..*]
 	AuctionType[1]
 end
 
 aggregation resultList between
-	AuctionList[1]
 	SearchAgent[1]
+	AuctionList[1]
 end
 
 aggregation auctionList between
-	AuctionList[1]
 	AuctioneerAgent[1]
+	AuctionList[1]
 end
 
 --------------------------------------------
@@ -207,7 +191,7 @@ end
 
 association administrate between
 	AuctioneerAgent[1]
-	Auction[0..*]
+	AuctionAgent[0..*]
 end
 
 association registered between
@@ -237,7 +221,7 @@ end
 
 association knows between
 	BidAgent[1]
-	Auction[1]
+	AuctionAgent[1]
 end
 
 association submit between
@@ -250,7 +234,7 @@ end
 constraints
 context AuctioneerAgent
 	inv: name.isDefined and id.isDefined
-context Auction
-	inv: name.isDefined and id.isDefined and productDescription.isDefined and auctionType.isDefined
+context AuctionAgent
+	inv: name.isDefined and id.isDefined and startTime < endTime
 context Object
-	inv: name.isDefined and description.isDefined and category.isDefined
+	inv: name.isDefined and description.isDefined
