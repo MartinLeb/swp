@@ -1,0 +1,253 @@
+model Auction
+
+--------------------------------------------
+--classes
+--------------------------------------------
+
+class Agent
+attributes 
+	vocab: Vocabular
+	name: String
+	id: Integer
+	description: String
+end
+
+class AuctioneerAgent < Agent
+operations
+	generateUserID(): Integer
+	generateAuctionID():Integer
+	generateAuctionAgent(auctionID: Integer)
+end
+
+class BidAgent < Agent
+attributes
+	strategy: Strategy
+
+end
+
+class AuctionAgent < Agent
+attributes
+	auctionID: Integer
+operations
+	createAuction(name: String, auctionID: Integer, productDescription: String, auctionType: AuctionType, startTime: Integer, endTime: Integer)
+	pre endTimeAfterStart: endTime > startTime
+	
+	confirmParticipation(userID:Integer)
+end
+
+class SearchAgent < Agent
+operations
+	searchQuery(name: String, auctioneerAgent: AuctioneerAgent): AuctionList
+end
+
+class AuctionList
+attributes
+	productDescription: String
+end
+
+class Auction
+attributes
+  name: String
+  id: Integer
+  productDescription: String
+  auctionType: AuctionType
+  startTime: Integer
+  endTime: Integer
+  bidHistory: BidHistory
+end
+
+class AuctionType
+end
+
+class EnglishAuction < AuctionType
+attributes 
+	minBid: Real
+end
+
+class DutchAuction < AuctionType
+end
+
+
+
+class Bid
+attributes
+	user: User
+	price: Real
+	startTime: Integer
+end
+
+class BidHistory
+attributes
+	bid: Bid
+end
+
+class User
+attributes
+	loginName: String
+	password: String
+	eMail: String
+	id: Integer
+operations 
+	setUserID(id: Integer)
+	requestAuction(auctioneerAgent: AuctioneerAgent)
+	pre registeredUser: self.id.isDefined
+
+	register(loginName: String, password: String, eMail: String): AuctioneerAgent
+	joinAuction(userID: Integer, auctionAgentID: Integer, auctionID: Integer)
+	searchAuction(name: String, searchAgent: SearchAgent): AuctionList
+	setStrategy(bidAgentID: Integer, strategy:Strategy)
+	
+end
+
+class Vocabular
+operations
+	login(name : String, password : String)
+	save()
+	bid(price : Real)
+	joinAuction(id : Integer)
+	createAuction(name : String, id : Integer)
+end
+
+class Category
+attributes
+	name: String
+	id: Integer
+end
+
+class Object
+attributes
+	name:String
+	description: String
+	category: Category
+end
+
+
+class Strategy
+attributes
+	bidPrice: Real
+end
+
+class BidByTime < Strategy
+attributes
+	time: Integer
+operations
+	bid(bidPrice: Real)
+end
+
+class PeriodicBid < Strategy
+attributes
+	startTime:Integer
+	intervall: Integer
+	maxBid: Real
+operations
+	bid(bidPrice: Real)
+end
+
+--------------------------------------------
+--compositions
+--------------------------------------------
+
+composition PartOf between
+	Object[1]
+	Category[0..*]
+end
+
+composition Uses between
+	Agent[*]
+	Vocabular[1]
+end
+
+composition Has between
+	Auction[1] 
+	Object[1]	
+end
+
+composition Follows between
+	BidAgent[0..*]
+	Strategy[1]
+end
+
+composition saves between
+	Auction[1]
+	BidHistory[1]
+end
+
+composition hasOne between
+	Auction[1..*]
+	AuctionType[1]
+end
+
+composition resultList between
+	AuctionList[1]
+	SearchAgent[1]
+end
+
+composition auctionList between
+	AuctionList[1]
+	AuctioneerAgent[1]
+end
+	
+
+--------------------------------------------
+--associations
+--------------------------------------------
+
+association CategoryHierarchy between
+	Category[0..*] role Category
+	Category[1] role SubCategory
+end
+
+association BidHistory between
+	BidHistory[1] role Bid 
+	BidHistory[1] role EarlierBid
+end
+
+association administrate between
+	AuctioneerAgent[1]
+	Auction[0..*]
+end
+
+association registered between
+	AuctioneerAgent[0..*]
+	User[0..*]
+end
+
+association list between
+	AuctionList[1] role searchResult
+	AuctionList[1] role nextResult
+end
+
+association search between
+	User[1]
+	SearchAgent[1..*] 
+end
+
+association searchQuery between
+	SearchAgent[1..*] role sendsQuery
+	AuctioneerAgent[1] role repliesResultList
+end
+
+association createBidAgent between
+	BidAgent[1]
+	User[1]
+end
+
+association knows between
+	BidAgent[1]
+	Auction[1]
+end
+
+association submit between
+	BidAgent[1]
+	Bid[0..*]
+end
+----------------------------------------------
+--Constraints
+----------------------------------------------
+constraints
+context AuctioneerAgent
+	inv: name.isDefined and id.isDefined
+context Auction
+	inv: name.isDefined and id.isDefined and productDescription.isDefined and auctionType.isDefined
+context Object
+	inv: name.isDefined and description.isDefined and category.isDefined
