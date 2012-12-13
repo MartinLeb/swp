@@ -7,20 +7,20 @@ model Auction
 -- no distinction between general and auction-specific commands here,
 -- doesn't seem to make sense on this level
 enum CommandWord {
-	login, register, bid, joinAuction, createAuction
+	login, register, bid, joinAuction, createAuction, setStrategy
 }
 
 --------------------------------------------
 --classes
 --------------------------------------------
 
-class Agent
+abstract class Agent
 attributes
 	name: String
 	id: Integer
 	description: String
 operations
-	sendMessage(m: Message, receiver: Agent): Boolean
+	sendMessage(m: Message, receiver: Agent)
 end
 
 class AuctioneerAgent < Agent
@@ -80,9 +80,13 @@ attributes
 	loginName: String
 	password: String
 	eMail: String
-	id: Integer	
+	id: Integer
+operations
+	createBidAgent()
 end
 
+-- this is just one message, for an actual implementation we need many more
+-- message types for different payloads, but they wouldn't help here
 class Message
 attributes
 	command: CommandWord
@@ -101,7 +105,7 @@ attributes
 end
 
 
-class Strategy
+abstract class Strategy
 attributes
 	bidPrice: Real
 end
@@ -109,8 +113,6 @@ end
 class BidByTime < Strategy
 attributes
 	time: Integer
-operations
-	bid(bidPrice: Real)
 end
 
 class PeriodicBid < Strategy
@@ -118,8 +120,6 @@ attributes
 	startTime:Integer
 	interval: Integer
 	maxBid: Real
-operations
-	bid(bidPrice: Real)
 end
 
 --------------------------------------------
