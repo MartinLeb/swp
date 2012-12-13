@@ -6,7 +6,7 @@ model Auction
 
 class Agent
 attributes 
-	vocab: Vocabular
+	vocab: Vocabulary
 	name: String
 	id: Integer
 	description: String
@@ -99,7 +99,7 @@ operations
 	
 end
 
-class Vocabular
+class Vocabulary
 operations
 	login(name : String, password : String)
 	save()
@@ -137,7 +137,7 @@ end
 class PeriodicBid < Strategy
 attributes
 	startTime:Integer
-	intervall: Integer
+	interval: Integer
 	maxBid: Real
 operations
 	bid(bidPrice: Real)
@@ -147,46 +147,49 @@ end
 --compositions
 --------------------------------------------
 
-composition PartOf between
-	Object[1]
-	Category[0..*]
-end
-
-composition Uses between
-	Agent[*]
-	Vocabular[1]
-end
-
 composition Has between
 	Auction[1] 
 	Object[1]	
-end
-
-composition Follows between
-	BidAgent[0..*]
-	Strategy[1]
 end
 
 composition saves between
 	Auction[1]
 	BidHistory[1]
 end
+	
+--------------------------------------------
+--aggregations
+--------------------------------------------
 
-composition hasOne between
+aggregation Uses between
+	Agent[*]
+	Vocabulary[1]
+end
+
+aggregation ObjectHasCategory between
+	Object[1]
+	Category[0..*]
+end
+
+aggregation Follows between
+	BidAgent[0..*]
+	Strategy[1]
+end
+
+aggregation hasOne between
 	Auction[1..*]
 	AuctionType[1]
 end
 
-composition resultList between
+aggregation resultList between
 	AuctionList[1]
 	SearchAgent[1]
 end
 
-composition auctionList between
+aggregation auctionList between
 	AuctionList[1]
 	AuctioneerAgent[1]
 end
-	
 
 --------------------------------------------
 --associations
