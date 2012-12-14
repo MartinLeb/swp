@@ -227,6 +227,10 @@ end
 ----------------------------------------------
 constraints
 
+----------------------------------------------
+--Invariants
+----------------------------------------------
+
 context AuctioneerAgent
 	inv attrsDefined: name.isDefined and id.isDefined
 	
@@ -261,3 +265,16 @@ context PeriodicBid
 		and maxBid.isDefined
 	inv consistentTime: startTime >= bidAgent.auctionAgent.startTime
 		and startTime <= bidAgent.auctionAgent.endTime
+
+----------------------------------------------
+--Pre-/Postconditions
+----------------------------------------------
+
+context AuctionType::acceptBid(amount: Real): Boolean
+	post acceptHigherBids: result = amount > currentBid
+
+context AuctioneerAgent::generateUserID(): Integer
+	post uniqueID: user->select(id = result)->isEmpty()
+
+context AuctioneerAgent::generateAuctionID(): Integer
+	post uniqueID: auctionAgent->select(id = result)->isEmpty()
