@@ -1,7 +1,7 @@
 model Auction
 
 --------------------------------------------
---enums
+-- Enums
 --------------------------------------------
 
 -- no distinction between general and auction-specific commands here,
@@ -11,9 +11,10 @@ enum CommandWord {
 }
 
 --------------------------------------------
---classes
+-- Classes
 --------------------------------------------
 
+------ start Agents -----
 abstract class Agent
 attributes
 	name: String
@@ -42,9 +43,33 @@ end
 class SearchAgent < Agent
 end
 
+class User
+attributes
+	loginName: String
+	password: String
+	eMail: String
+	id: Integer
+operations
+	createBidAgent()
+end
+----- end Agents -----
+
+----- start auction related stuff -----
 class AuctionDescription
 attributes
 	productDescription: String
+end
+
+class Category
+attributes
+	name: String
+	id: Integer
+end
+
+class Object
+attributes
+	name: String
+	description: String
 end
 
 abstract class AuctionType
@@ -65,7 +90,9 @@ attributes
 	startPrice: Real
 	priceDecrement: Real
 end
+----- end auction related stuff -----
 
+----- start bidding related stuff -----
 class Bid
 attributes
 	user: User
@@ -75,35 +102,12 @@ end
 class BidHistory
 end
 
-class User
-attributes
-	loginName: String
-	password: String
-	eMail: String
-	id: Integer
-operations
-	createBidAgent()
-end
-
 -- this is just one message, for an actual implementation we need many more
 -- message types for different payloads, but they wouldn't help here
 class Message
 attributes
 	command: CommandWord
 end
-
-class Category
-attributes
-	name: String
-	id: Integer
-end
-
-class Object
-attributes
-	name: String
-	description: String
-end
-
 
 abstract class Strategy
 attributes
@@ -121,9 +125,10 @@ attributes
 	interval: Integer
 	maxBid: Real
 end
+----- end bidding related stuff -----
 
 --------------------------------------------
---compositions
+-- Compositions
 --------------------------------------------
 -- some of the names here are very (too) verbose, to avoid awkward situations
 -- like having "has" twice (USE can't handle duplicate association names) 
@@ -144,7 +149,7 @@ composition contains between
 end
 	
 --------------------------------------------
---aggregations
+-- Aggregations
 --------------------------------------------
 
 aggregation ObjectHasCategory between
@@ -173,7 +178,7 @@ aggregation AuctioneerKnowsAllAuctions between
 end
 
 --------------------------------------------
---associations
+-- Associations
 --------------------------------------------
 
 association uses between
@@ -223,12 +228,12 @@ association submit between
 end
 
 ----------------------------------------------
---Constraints
+-- Constraints
 ----------------------------------------------
 constraints
 
 ----------------------------------------------
---Invariants
+-- Invariants
 ----------------------------------------------
 
 context AuctioneerAgent
@@ -267,7 +272,7 @@ context PeriodicBid
 		and startTime <= bidAgent.auctionAgent.endTime
 
 ----------------------------------------------
---Pre-/Postconditions
+-- Pre-/Postconditions
 ----------------------------------------------
 
 context AuctionType::acceptBid(amount: Real): Boolean
