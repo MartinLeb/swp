@@ -153,7 +153,7 @@ aggregation ObjectHasCategory between
 end
 
 aggregation follows between
-	BidAgent[0..*]
+	BidAgent[1]
 	Strategy[1]
 end
 
@@ -226,9 +226,38 @@ end
 --Constraints
 ----------------------------------------------
 constraints
+
 context AuctioneerAgent
-	inv: name.isDefined and id.isDefined
+	inv attrsDefined: name.isDefined and id.isDefined
+	
 context AuctionAgent
-	inv: name.isDefined and id.isDefined and startTime < endTime
+	inv attrsDefined: name.isDefined and id.isDefined
+	inv assocDefined: object.name.isDefined and auctionType.isDefined
+	inv consistentTime: startTime < endTime
+	
 context Object
-	inv: name.isDefined and description.isDefined
+	inv attrsDefined: name.isDefined and description.isDefined
+	inv assocDefined: category.isDefined
+
+context EnglishAuction
+	inv attrsDefined: minBid.isDefined and priceIncrement.isDefined
+
+context DutchAuction
+	inv attrsDefined: startPrice.isDefined and priceDecrement.isDefined
+
+context Category
+	inv attrsDefined: name.isDefined and id.isDefined
+
+context BidAgent
+	inv assocDefined: strategy.isDefined
+
+context BidByTime
+	inv attrsDefined: time.isDefined
+	inv consistentTime: time >= bidAgent.auctionAgent.startTime
+		and time <= bidAgent.auctionAgent.endTime
+
+context PeriodicBid
+	inv attrsDefined: startTime.isDefined and interval.isDefined
+		and maxBid.isDefined
+	inv consistentTime: startTime >= bidAgent.auctionAgent.startTime
+		and startTime <= bidAgent.auctionAgent.endTime
