@@ -125,8 +125,10 @@ end
 --------------------------------------------
 --compositions
 --------------------------------------------
+-- some of the names here are very (too) verbose, to avoid awkward situations
+-- like having "has" twice (USE can't handle duplicate association names) 
 
-composition Has between
+composition AuctionHasProduct between
 	AuctionAgent[1] 
 	Object[1]	
 end
@@ -136,7 +138,7 @@ composition saves between
 	BidHistory[1]
 end
 
-composition BidHistoryContainsBids between
+composition contains between
 	BidHistory[1]
 	Bid[*]
 end
@@ -146,26 +148,26 @@ end
 --------------------------------------------
 
 aggregation ObjectHasCategory between
-	Object[1]
-	Category[0..*]
+	Object[*]
+	Category[1]
 end
 
-aggregation Follows between
+aggregation follows between
 	BidAgent[0..*]
 	Strategy[1]
 end
 
-aggregation hasOne between
+aggregation AuctionHasType between
 	AuctionAgent[1..*]
 	AuctionType[1]
 end
 
-aggregation resultList between
+aggregation finds between
 	SearchAgent[1]
 	AuctionDescription[*]
 end
 
-aggregation auctionList between
+aggregation AuctioneerKnowsAllAuctions between
 	AuctioneerAgent[1]
 	AuctionDescription[*]
 end
@@ -174,42 +176,43 @@ end
 --associations
 --------------------------------------------
 
-association AgentUsesMessages between
+association uses between
 	Agent[1]
 	Message[*]
 end
 
 association CategoryHierarchy between
-	Category[0..*] role Category
-	Category[1] role SubCategory
+	Category[1] role Category
+	Category[*] role SubCategory
 end
 
-association administrate between
+association manages between
 	AuctioneerAgent[1]
 	AuctionAgent[0..*]
 end
 
-association registered between
+association registers between
 	AuctioneerAgent[0..*]
 	User[0..*]
 end
 
-association search between
-	User[1]
+association searchesAuctions between
+	User[*]
 	SearchAgent[1..*] 
 end
 
-association searchQuery between
-	SearchAgent[1..*] role sendsQuery
+association queriesAuctions between
+	SearchAgent[1..*] role QuerySender
 	AuctioneerAgent[1] role repliesResultList
 end
 
-association createBidAgent between
-	BidAgent[1]
-	User[1]
+association creates between
+	User[1] role source
+	BidAgent[1] role bidder
+--	AuctionAgent[1] role targetAuction -- now why doesn't this work
 end
 
-association knows between
+association BidAgentKnowsAuction between
 	BidAgent[1]
 	AuctionAgent[1]
 end
@@ -218,6 +221,7 @@ association submit between
 	BidAgent[1]
 	Bid[0..*]
 end
+
 ----------------------------------------------
 --Constraints
 ----------------------------------------------
