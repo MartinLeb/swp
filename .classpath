@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="lib" path="lib/commons-codec-1.3.jar"/>
+	<classpathentry kind="lib" path="lib/jade.jar"/>
+	<classpathentry kind="lib" path="lib/assocdb.jar"/>
+	<classpathentry kind="lib" path="lib/continuous.jar"/>
+	<classpathentry kind="lib" path="lib/dbconv.jar"/>
+	<classpathentry kind="lib" path="lib/fulltext-cldc11.jar"/>
+	<classpathentry kind="lib" path="lib/javassist.jar"/>
+	<classpathentry kind="lib" path="lib/jzlib-midp.jar"/>
+	<classpathentry kind="lib" path="lib/perst-cdc.jar"/>
+	<classpathentry kind="lib" path="lib/perst-jsr75-reflect.jar"/>
+	<classpathentry kind="lib" path="lib/perst-jsr75.jar"/>
+	<classpathentry kind="lib" path="lib/perst-rms-reflect.jar"/>
+	<classpathentry kind="lib" path="lib/perst-rms.jar"/>
+	<classpathentry kind="lib" path="lib/perst.jar"/>
+	<classpathentry kind="lib" path="lib/perst11.jar"/>
+	<classpathentry kind="lib" path="lib/perst11xml.jar"/>
+	<classpathentry kind="lib" path="lib/perst14.jar"/>
+	<classpathentry kind="lib" path="lib/sergen.jar"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>
